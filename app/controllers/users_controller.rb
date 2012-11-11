@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
   
   def new
@@ -12,6 +13,7 @@ class UsersController < ApplicationController
   end
   
   def index
+    #@users = User.order("name DESC").paginate(page: params[:page])
     @users = User.paginate(page: params[:page])
   end
   
@@ -55,14 +57,6 @@ class UsersController < ApplicationController
   
   private
   
-    def signed_in_user
-      if not signed_in?
-        flash[:notice] = "Please sign in."
-        store_location
-        redirect_to signin_url
-      end
-    end
-    
     def correct_user
       accessed_user = User.find(params[:id])
       if not current_user?(accessed_user)
